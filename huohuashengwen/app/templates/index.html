@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ project_name }} · 小说 AI 助手</title>
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+  <style>
+    .boot-error{position:fixed;top:0;left:0;right:0;background:#ffeded;color:#b00020;padding:8px 12px;font-size:14px;display:none;z-index:9999}
+  </style>
+</head>
+<body>
+  <div id="bootError" class="boot-error"></div>
+
+  <div class="container" id="appContainer">
+    <div class="title">{{ project_name }}</div>
+    <div class="tagline">{{ tagline }}</div>
+
+    <div class="layout">
+      <!-- 左侧：世界线阶段性总结面板 -->
+      <aside class="summary-panel" id="summaryPanel">
+        <div class="panel-header">
+          <div class="panel-title">当前世界线下的剧情总结</div>
+          <button id="togglePanel" class="panel-toggle" aria-label="收起/展开" type="button">⟨⟩</button>
+        </div>
+        <div class="panel-section">
+          <div class="panel-subtitle">已知信息</div>
+          <div id="knownGrid" class="known-grid"></div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-subtitle">剧情推进（对应每个决策点）</div>
+          <ol id="worldProgress" class="panel-list"></ol>
+        </div>
+      </aside>
+
+      <!-- 右侧：输入区 + 树 -->
+      <main class="main-area" id="mainArea">
+        <div class="root-card" id="rootCard">
+          <textarea id="seed" class="root-textarea" placeholder="写下你的小说已有信息（简介 / 设定 / 金手指 / 灵感片段...）"></textarea>
+          <div class="root-actions">
+            <!-- 模型选择（默认 DeepSeek 放第一项） -->
+            <select id="modelSelect" class="btn btn-secondary" title="选择模型" autocomplete="off" data-default="deepseek">
+              <option value="deepseek" selected>DeepSeek</option>
+              <option value="gemini">Gemini</option>
+            </select>
+            <!-- 内联兜底 onclick：即使脚本未绑定也能触发全局函数 -->
+            <button id="btnSeed" class="btn" type="button" data-action="seed-confirm"
+                    onclick="window.__onSeedClick && window.__onSeedClick()">确认</button>
+          </div>
+        </div>
+
+        <div id="rootSummary" class="summary" style="display:none;"></div>
+
+        <!-- 曲线层 -->
+        <svg id="edgesSvg" class="edges" width="0" height="0"></svg>
+        <!-- 树容器 -->
+        <div id="tree" class="tree"></div>
+
+        <div class="footer-actions">
+          <button id="btnExport" class="btn btn-secondary" type="button">导出当前大纲（JSON）</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- 版本号再升级，强制加载新 JS（ES5 版） -->
+  <script src="{{ url_for('static', filename='js/main.js') }}?v=2025-08-16-f"></script>
+</body>
+</html>
